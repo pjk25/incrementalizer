@@ -59,7 +59,7 @@
     (if exit-message
       (exit (if ok? 0 1) exit-message)
       (try
-        (action options)
+        (println (action options))
         (catch Exception e
           (if (:debug options) (.printStackTrace e))
           (exit 1 (str "\nERROR: " e)))))))

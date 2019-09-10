@@ -1,0 +1,10 @@
+---
+director-config:
+  properties-configuration:
+    director_configuration:
+      director_worker_count: 5
+products:
+- product-name: cf
+  version: 2.5.4
+- product-name: p-redis
+  version: 1.0.0

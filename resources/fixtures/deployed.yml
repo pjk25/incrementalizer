@@ -1,0 +1,5 @@
+---
+director-config:
+  properties-configuration:
+    director_configuration:
+      director_worker_count: 5
