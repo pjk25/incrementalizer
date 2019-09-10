@@ -12,7 +12,7 @@
     (is (= (yaml/parse-string (core/minimal-change {:deployed-config-path "resources/fixtures/nothing.yml"
                                                     :desired-config-path "resources/fixtures/desired.yml"}))
            {:director-config {:properties-configuration {:director_configuration {:director_worker_count 5}}}})))
-  
+
   (testing "when the desired configuration would change multiple tiles"
     (is (= (yaml/parse-string (core/minimal-change {:deployed-config-path "resources/fixtures/deployed.yml"
                                                     :desired-config-path "resources/fixtures/desired.yml"}))

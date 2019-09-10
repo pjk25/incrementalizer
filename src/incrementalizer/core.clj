@@ -59,7 +59,7 @@
         raw-desired-config (yaml/parse-string (slurp (io/file desired-config-path)))
         deployed-config (s/conform ::foundation/config raw-deployed-config)
         desired-config (s/conform ::foundation/config raw-desired-config)]
-    
+
     (when (= ::s/invalid deployed-config)
       (binding [*out* *err*]
         (println "The deployed foundation configuration is not valid")
