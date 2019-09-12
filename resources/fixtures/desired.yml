@@ -3,6 +3,7 @@ director-config:
   properties-configuration:
     director_configuration:
       director_worker_count: 5
+opsman-version: 2.5.0
 products:
 - product-name: cf
   version: 2.5.4

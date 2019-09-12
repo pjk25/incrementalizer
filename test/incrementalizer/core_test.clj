@@ -9,13 +9,17 @@
   (stest/instrument `core/minimal-change)
 
   (testing "when nothing is deployed"
-    (is (= (yaml/parse-string (core/minimal-change {:deployed-config-path "resources/fixtures/nothing.yml"
-                                                    :desired-config-path "resources/fixtures/desired.yml"}))
-           {:director-config {:properties-configuration {:director_configuration {:director_worker_count 5}}}})))
-
-  (testing "when the desired configuration would change multiple tiles"
-    (is (= (yaml/parse-string (core/minimal-change {:deployed-config-path "resources/fixtures/deployed.yml"
+    (is (= (yaml/parse-string (core/minimal-change {:constraints-path "resources/fixtures/constraints.edn"
+                                                    :deployed-config-path "resources/fixtures/nothing.yml"
                                                     :desired-config-path "resources/fixtures/desired.yml"}))
            {:director-config {:properties-configuration {:director_configuration {:director_worker_count 5}}}
+            :opsman-version "2.5.0"})))
+
+  (testing "when the desired configuration would change multiple tiles"
+    (is (= (yaml/parse-string (core/minimal-change {:constraints-path "resources/fixtures/constraints.edn"
+                                                    :deployed-config-path "resources/fixtures/deployed.yml"
+                                                    :desired-config-path "resources/fixtures/desired.yml"}))
+           {:director-config {:properties-configuration {:director_configuration {:director_worker_count 5}}}
+            :opsman-version "2.5.0"
             :products [{:product-name "cf"
                         :version "2.5.4"}]}))))

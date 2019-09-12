@@ -3,9 +3,12 @@
             [clojure.spec.alpha :as s]
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
+            [clojure.math.combinatorics :as combo]
             [clj-yaml.core :as yaml]
+            [clj-semver.core :as semver]
             [foundation-lib.foundation-configuration :as foundation]
-            [foundation-lib.util :as util]))
+            [foundation-lib.util :as util]
+            [incrementalizer.constraint :as constraint]))
 
 (defn- paired-product-configs
   [deployed-products desired-products]
@@ -45,40 +48,45 @@
 (defn- possible-changes
   [deployed-config desired-config]
   ; TODO: incorporate the multi-tile changes resulting from merging n single tile changes
+  ;       use (combo/combinations product-names-with-changes-list n)
   (single-tile-changes deployed-config desired-config))
-
-(defn- valid-config?
-  [desired-config]
-  ; TODO: we want to read an edn which specifies version based dependencies
-  true)
 
 (defn minimal-change
   [cli-options]
-  (let [{:keys [deployed-config-path desired-config-path]} cli-options
+  (let [{:keys [constraints-path deployed-config-path desired-config-path]} cli-options
+        raw-constraints (clojure.edn/read-string (slurp (io/file constraints-path)))
         raw-deployed-config (yaml/parse-string (slurp (io/file deployed-config-path)))
         raw-desired-config (yaml/parse-string (slurp (io/file desired-config-path)))
-        deployed-config (s/conform ::foundation/config raw-deployed-config)
-        desired-config (s/conform ::foundation/config raw-desired-config)]
+        constraints (s/conform ::constraint/constraints raw-constraints)
+        deployed-config (s/conform ::foundation/deployed-config raw-deployed-config)
+        desired-config (s/conform ::foundation/desired-config raw-desired-config)]
+
+    (when (= ::s/invalid constraints)
+      (binding [*out* *err*]
+        (println "The constraints are not valid")
+        (s/explain ::constraint/constraints raw-constraints)
+        (println))
+      (throw (ex-info "The constraints are not valid" {})))
 
     (when (= ::s/invalid deployed-config)
       (binding [*out* *err*]
         (println "The deployed foundation configuration is not valid")
-        (s/explain ::foundation/config raw-deployed-config)
+        (s/explain ::foundation/deployed-config raw-deployed-config)
         (println))
       (throw (ex-info "The deployed foundation configuration is not valid" {})))
 
     (when (= ::s/invalid desired-config)
       (binding [*out* *err*]
         (println "The desired foundation configuration is not valid")
-        (s/explain ::foundation/config raw-desired-config)
+        (s/explain ::foundation/desired-config raw-desired-config)
         (println))
       (throw (ex-info "The desired foundation configuration is not valid" {})))
 
-    (let [extra-config (util/non-specd ::foundation/config desired-config)]
+    (let [extra-config (util/non-specd ::foundation/desired-config desired-config)]
       (when-not (empty? extra-config)
         (throw (ex-info "The desired foundation configuration contains extraneous data" extra-config))))
 
-    (if-let [incremental-config (first (filter valid-config? (possible-changes deployed-config desired-config)))]
+    (if-let [incremental-config (first (filter (partial constraint/valid-config? constraints) (possible-changes deployed-config desired-config)))]
       (yaml/generate-string incremental-config)
       (throw (ex-info "Could not compute a valid configuration" {})))))
 

@@ -1,8 +1,10 @@
-{:deps {org.clojure/clojure         {:mvn/version "1.10.0"}
-        org.clojure/tools.cli       {:mvn/version "0.4.2"}
-        org.clojure/core.match      {:mvn/version "0.3.0"}
-        clj-commons/clj-yaml        {:mvn/version "0.7.0"}
-        foundation-lib              {:local/root "../foundation-lib"}}
+{:deps {org.clojure/clojure            {:mvn/version "1.10.0"}
+        org.clojure/tools.cli          {:mvn/version "0.4.2"}
+        org.clojure/core.match         {:mvn/version "0.3.0"}
+        org.clojure/math.combinatorics {:mvn/version "0.1.6"}
+        clj-commons/clj-yaml           {:mvn/version "0.7.0"}
+        grimradical/clj-semver         {:mvn/version "0.3.0"}
+        foundation-lib                 {:local/root "../foundation-lib"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}
                                com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"

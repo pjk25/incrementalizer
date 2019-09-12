@@ -41,11 +41,13 @@
       {:exit-message (error-msg errors)}
 
       ;; custom validation on arguments
-      (and (= 3 (count arguments))
+      (and (= 4 (count arguments))
            (#{"min"} (first arguments)))
-      {:action core/minimal-change :options (assoc options
-                                                   :deployed-config-path (nth arguments 1)
-                                                   :desired-config-path (nth arguments 2))}
+      {:action core/minimal-change
+       :options (assoc options
+                       :constraints-path (nth arguments 1)
+                       :deployed-config-path (nth arguments 2)
+                       :desired-config-path (nth arguments 3))}
 
       :else ; failed custom validation => exit with usage summary
       {:exit-message (usage summary)})))

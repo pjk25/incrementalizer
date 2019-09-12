@@ -1,0 +1,8 @@
+[{:selector {:product-name "cf"
+             :version "2.5.0"}
+  :requires [{:product-name "p-bosh"
+              :version "2.5.0"}]}
+ {:selector {:product-name "apm"
+             :version "1.6.1"}
+  :requires [{:product-name "cf"
+              :version "2.3.0"}]}]
