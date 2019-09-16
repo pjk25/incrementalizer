@@ -26,7 +26,7 @@
                        products)))
 
 (defn- single-product-change
-  [deployed-config desired-config changed-product-pair]
+  [deployed-config changed-product-pair]
   (let [{:keys [name deployed desired]} changed-product-pair]
     (match [deployed desired]
       [nil _] (update deployed-config :products #(conj % desired))
@@ -34,22 +34,27 @@
       :else (let [index (product-index (:products deployed-config) name)]
               (assoc-in deployed-config [:products index] desired)))))
 
-(defn- single-tile-changes
-  [deployed-config desired-config]
-  (let [product-pairs (paired-product-configs (:products deployed-config) (:products desired-config))
-        changed-products (filter #(foundation/requires-changes? (:deployed %) (:desired %)) product-pairs)
-        single-product-changes (map #(single-product-change deployed-config desired-config %)
-                                    changed-products)]
-    (if (foundation/requires-changes? (:director-config deployed-config) (:director-config desired-config))
-      (let [director-changes (assoc deployed-config :director-config (:director-config desired-config))]
-        (cons director-changes single-product-changes))
-      single-product-changes)))
+(defn- selective-deploy
+  [deployed-config products]
+  (let [[product & rest] products]
+    (match [product]
+      [nil]              deployed-config
+      [{:name "p-bosh"}] (selective-deploy (assoc deployed-config :director-config (:desired product)) rest)
+      [_]                (selective-deploy (single-product-change deployed-config product) rest))))
+
+(defn- all-combinations
+  [list]
+  (apply concat (map #(combo/combinations list (inc %)) (range (count list)))))
 
 (defn- possible-changes
   [deployed-config desired-config]
-  ; TODO: incorporate the multi-tile changes resulting from merging n single tile changes
-  ;       use (combo/combinations product-names-with-changes-list n)
-  (single-tile-changes deployed-config desired-config))
+  (let [product-pairs (paired-product-configs (:products deployed-config) (:products desired-config))
+        changed-products (cond->> (filter #(foundation/requires-changes? (:deployed %) (:desired %)) product-pairs)
+                           (foundation/requires-changes? (:director-config deployed-config)
+                                                         (:director-config desired-config)) (cons {:name "p-bosh"
+                                                                                                   :deployed (:director-config deployed-config)
+                                                                                                   :desired (:director-config desired-config)}))]
+    (map #(selective-deploy deployed-config %) (all-combinations changed-products))))
 
 (defn minimal-change
   [cli-options]
