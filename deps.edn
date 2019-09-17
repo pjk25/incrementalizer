@@ -4,7 +4,8 @@
         org.clojure/math.combinatorics {:mvn/version "0.1.6"}
         clj-commons/clj-yaml           {:mvn/version "0.7.0"}
         grimradical/clj-semver         {:mvn/version "0.3.0"}
-        foundation-lib                 {:local/root "../foundation-lib"}}
+        pjk25/foundation-lib           {:git/url "https://github.com/pjk25/foundation-lib"
+                                        :sha "69b9881f96092900b7cf37dbdd25f31942ab3463"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}
                                com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"

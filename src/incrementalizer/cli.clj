@@ -2,7 +2,6 @@
   (:gen-class)
   (:require [clojure.string :as string]
             [clojure.tools.cli :refer [parse-opts]]
-            [clojure.data.json :as json]
             [incrementalizer.core :as core]))
 
 (set! *warn-on-reflection* true)
