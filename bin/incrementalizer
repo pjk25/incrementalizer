@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+set -e
+
+java -cp /incrementalizer.jar \
+    clojure.main -m incrementalizer.cli \
+    "$@"

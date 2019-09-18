@@ -13,8 +13,8 @@
                   :main-opts ["-m" "cognitect.test-runner"]}
            :user {:extra-paths ["user"]
                   :extra-deps {org.clojure/tools.namespace {:mvn/version "0.3.0-alpha4"}}}
-           :uberjar {:extra-deps {luchiniatwork/cambada {:mvn/version "1.0.0"}}
-                     :main-opts ["-m" "cambada.uberjar"]}
+           :uberjar {:extra-deps {seancorfield/depstar {:mvn/version "0.3.3"}}
+                     :main-opts ["-m" "hf.depstar.uberjar" "target/incrementalizer.jar"]}
            :lint {:extra-deps {com.jameslaverack/cljfmt-runner
                                {:git/url "https://github.com/JamesLaverack/cljfmt-runner"
                                 :sha "97960e9a6464935534b5a6bab529e063d0027128"}}
