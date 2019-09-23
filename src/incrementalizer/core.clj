@@ -19,20 +19,16 @@
                     :deployed (deployed-by-name %)
                     :desired (desired-by-name %)) product-names)))
 
-(defn- product-index
-  [products product-name]
-  (first (keep-indexed #(if (= product-name (:product-name %2))
-                          %1)
-                       products)))
-
 (defn- single-product-change
   [deployed-config changed-product-pair]
   (let [{:keys [name deployed desired]} changed-product-pair]
     (match [deployed desired]
       [nil _] (update deployed-config :products #(conj % desired))
-      [_ nil] (update deployed-config :products #(remove (partial = deployed) %))
-      :else (let [index (product-index (:products deployed-config) name)]
-              (assoc-in deployed-config [:products index] desired)))))
+      [_ nil] (update deployed-config :products #(disj % deployed))
+      :else (update deployed-config
+                    :products #(-> %
+                                   (disj deployed)
+                                   (conj desired))))))
 
 (defn- selective-deploy
   [deployed-config products]
