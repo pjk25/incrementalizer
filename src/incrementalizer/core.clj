@@ -43,13 +43,16 @@
   (apply concat (map #(combo/combinations list (inc %)) (range (count list)))))
 
 (defn- possible-changes
-  [deployed-config desired-config]
+  [cli-options deployed-config desired-config]
   (let [product-pairs (paired-product-configs (:products deployed-config) (:products desired-config))
         changed-products (cond->> (filter #(foundation/requires-changes? (:deployed %) (:desired %)) product-pairs)
                            (foundation/requires-changes? (:director-config deployed-config)
                                                          (:director-config desired-config)) (cons {:name "p-bosh"
                                                                                                    :deployed (:director-config deployed-config)
                                                                                                    :desired (:director-config desired-config)}))]
+    (when (:debug cli-options)
+      (binding [*out* *err*]
+        (println "Found changes in the following products: " (map :name changed-products))))
     (map #(selective-deploy deployed-config %) (all-combinations changed-products))))
 
 (defn minimal-change
@@ -87,7 +90,7 @@
       (when-not (empty? extra-config)
         (throw (ex-info "The desired foundation configuration contains extraneous data" extra-config))))
 
-    (if-let [incremental-config (first (filter (partial constraint/valid-config? constraints) (possible-changes deployed-config desired-config)))]
+    (if-let [incremental-config (first (filter (partial constraint/valid-config? constraints) (possible-changes cli-options deployed-config desired-config)))]
       (yaml/generate-string incremental-config)
       (throw (ex-info "Could not compute a valid configuration" {})))))
 
