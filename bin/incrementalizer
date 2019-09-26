@@ -3,5 +3,4 @@
 set -e
 
 java -cp /incrementalizer.jar \
-    clojure.main -m incrementalizer.cli \
-    "$@"
+    incrementalizer.cli "$@"

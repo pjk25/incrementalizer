@@ -1,4 +1,4 @@
-{:deps {org.clojure/clojure            {:mvn/version "1.10.0"}
+{:deps {org.clojure/clojure            {:mvn/version "1.10.1"}
         org.clojure/tools.cli          {:mvn/version "0.4.2"}
         org.clojure/core.match         {:mvn/version "0.3.0"}
         org.clojure/math.combinatorics {:mvn/version "0.1.6"}
@@ -6,6 +6,7 @@
         grimradical/clj-semver         {:mvn/version "0.3.0"}
         pjk25/foundation-lib           {:git/url "https://github.com/pjk25/foundation-lib"
                                         :sha "69b9881f96092900b7cf37dbdd25f31942ab3463"}}
+ :paths ["src" "classes"]
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}
                                com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"

@@ -1,5 +1,7 @@
 FROM clojure:tools-deps AS BASE
 
+RUN apt-get update && apt-get install -y zip
+
 WORKDIR /incrementalizer
 
 RUN curl -LO https://github.com/cloudfoundry/bosh-cli/releases/download/v6.0.0/bosh-cli-6.0.0-linux-amd64
