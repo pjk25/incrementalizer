@@ -90,9 +90,11 @@
       (when-not (empty? extra-config)
         (throw (ex-info "The desired foundation configuration contains extraneous data" extra-config))))
 
-    (if-let [incremental-config (first (filter (partial constraint/valid-config? constraints) (possible-changes cli-options deployed-config desired-config)))]
-      (yaml/generate-string incremental-config)
-      (throw (ex-info "Could not compute a valid configuration" {})))))
+    (if (= deployed-config desired-config)
+      (yaml/generate-string desired-config)
+      (if-let [incremental-config (first (filter (partial constraint/valid-config? constraints) (possible-changes cli-options deployed-config desired-config)))]
+        (yaml/generate-string incremental-config)
+        (throw (ex-info "Could not compute a valid configuration" {}))))))
 
 (s/def ::deployed-config-path string?)
 

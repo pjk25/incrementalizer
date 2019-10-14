@@ -33,4 +33,9 @@
             :products [{:product-name "p-redis"
                         :version "1.0.0"}
                        {:product-name "cf"
-                        :version "2.5.5"}]}))))
+                        :version "2.5.5"}]})))
+  (testing "when the desired is already deployed"
+    (is (= (yaml/parse-string (core/minimal-change {:constraints-path "resources/fixtures/constraints.edn"
+                                                    :deployed-config-path "resources/fixtures/desired2.yml"
+                                                    :desired-config-path "resources/fixtures/desired2.yml"})))
+        (yaml/parse-string (slurp "resources/fixtures/desired2.yml")))))

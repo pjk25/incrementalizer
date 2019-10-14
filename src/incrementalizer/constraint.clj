@@ -45,8 +45,6 @@
 
 (defn- valid-config-for-product?
   [constraints desired-config product-name]
-  ; TODO: report the p-bosh/opsman version in the configuration.yml on check for the resource
-  ;       and make the version of the foundation just the hash, without the opsman version pair
   (let [desired-version (if (= "p-bosh" product-name)
                           (:version (:director-config desired-config))
                           (some #(if (= product-name (:product-name %)) (:version %)) (:products desired-config)))
