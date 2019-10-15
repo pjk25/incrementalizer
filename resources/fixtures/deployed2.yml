@@ -4,3 +4,6 @@ director-config:
   properties-configuration:
     director_configuration:
       director_worker_count: 5
+products:
+- product-name: cf
+  version: 2.5.4

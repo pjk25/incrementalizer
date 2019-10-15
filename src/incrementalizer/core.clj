@@ -6,8 +6,10 @@
             [clojure.math.combinatorics :as combo]
             [clj-yaml.core :as yaml]
             [clj-semver.core :as semver]
-            [foundation-lib.foundation-configuration :as foundation]
+            [foundation-lib.query :as query]
             [foundation-lib.util :as util]
+            [foundation-lib.deployed-configuration :as deployed-configuration]
+            [foundation-lib.desired-configuration :as desired-configuration]
             [incrementalizer.constraint :as constraint]))
 
 (defn- paired-product-configs
@@ -45,11 +47,11 @@
 (defn- possible-changes
   [cli-options deployed-config desired-config]
   (let [product-pairs (paired-product-configs (:products deployed-config) (:products desired-config))
-        changed-products (cond->> (filter #(foundation/requires-changes? (:deployed %) (:desired %)) product-pairs)
-                           (foundation/requires-changes? (:director-config deployed-config)
-                                                         (:director-config desired-config)) (cons {:name "p-bosh"
-                                                                                                   :deployed (:director-config deployed-config)
-                                                                                                   :desired (:director-config desired-config)}))]
+        changed-products (cond->> (filter #(query/product-requires-changes? (:deployed %) (:desired %)) product-pairs)
+                           (query/director-requires-changes? (:director-config deployed-config)
+                                                             (:director-config desired-config)) (cons {:name "p-bosh"
+                                                                                                       :deployed (:director-config deployed-config)
+                                                                                                       :desired (:director-config desired-config)}))]
     (when (:debug cli-options)
       (binding [*out* *err*]
         (println "Found changes in the following products: " (map :name changed-products))))
@@ -62,8 +64,8 @@
         raw-deployed-config (yaml/parse-string (slurp (io/file deployed-config-path)))
         raw-desired-config (yaml/parse-string (slurp (io/file desired-config-path)))
         constraints (s/conform ::constraint/constraints raw-constraints)
-        deployed-config (s/conform ::foundation/deployed-config raw-deployed-config)
-        desired-config (s/conform ::foundation/desired-config raw-desired-config)]
+        deployed-config (s/conform ::deployed-configuration/deployed-config raw-deployed-config)
+        desired-config (s/conform ::desired-configuration/desired-config raw-desired-config)]
 
     (when (= ::s/invalid constraints)
       (binding [*out* *err*]
@@ -75,18 +77,18 @@
     (when (= ::s/invalid deployed-config)
       (binding [*out* *err*]
         (println "The deployed foundation configuration is not valid")
-        (s/explain ::foundation/deployed-config raw-deployed-config)
+        (s/explain ::deployed-configuration/deployed-config raw-deployed-config)
         (println))
       (throw (ex-info "The deployed foundation configuration is not valid" {})))
 
     (when (= ::s/invalid desired-config)
       (binding [*out* *err*]
         (println "The desired foundation configuration is not valid")
-        (s/explain ::foundation/desired-config raw-desired-config)
+        (s/explain ::desired-configuration/desired-config raw-desired-config)
         (println))
       (throw (ex-info "The desired foundation configuration is not valid" {})))
 
-    (let [extra-config (util/non-specd ::foundation/desired-config desired-config)]
+    (let [extra-config (util/non-specd ::desired-configuration/desired-config desired-config)]
       (when-not (empty? extra-config)
         (throw (ex-info "The desired foundation configuration contains extraneous data" extra-config))))
 

@@ -1,7 +1,7 @@
 (ns incrementalizer.constraint
   (:require [clojure.spec.alpha :as s]
             [clj-semver.core :as semver]
-            [foundation-lib.foundation-configuration :as foundation]))
+            [foundation-lib.deployed-configuration :as deployed-configuration]))
 
 (s/def ::product-name string?)
 
@@ -64,12 +64,12 @@
       (update :requires #(map process-selector %))))
 
 (defn valid-config?
-  [constraints desired-config]
+  [constraints deployed-config]
   (let [processed-constraints (map process-constraint constraints)
-        product-names (cons "p-bosh" (map :product-name (:products desired-config)))]
-    (every? (partial valid-config-for-product? processed-constraints desired-config) product-names)))
+        product-names (cons "p-bosh" (map :product-name (:products deployed-config)))]
+    (every? (partial valid-config-for-product? processed-constraints deployed-config) product-names)))
 
 (s/fdef valid-config?
         :args (s/cat :constraints ::constraints
-                     :desired-config ::foundation/desired-config)
+                     :deployed-config ::deployed-configuration/deployed-config)
         :ret boolean?)
