@@ -5,7 +5,7 @@
         clj-commons/clj-yaml           {:mvn/version "0.7.0"}
         grimradical/clj-semver         {:mvn/version "0.3.0"}
         pjk25/foundation-lib           {:git/url "https://github.com/pjk25/foundation-lib"
-                                        :sha "76eecd0736a4c932f25db2b45a82d7f032ae03c6"}}
+                                        :sha "2703fcba18fcb44150bb487d065ee091b764b057"}}
  :paths ["src" "classes"]
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}
