@@ -10,8 +10,6 @@ RUN curl -LO https://github.com/pivotal-cf/om/releases/download/4.1.0/om-linux-4
 RUN curl -LO https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/2.5.3/credhub-linux-2.5.3.tgz
 RUN tar -xvf credhub-linux-2.5.3.tgz
 
-RUN curl -LO https://github.com/sahilm/yamldiff/releases/download/0.1.0/yamldiff-v0.1.0-linux-amd64
-
 ADD scripts scripts
 ADD src src
 ADD resources resources
@@ -26,13 +24,11 @@ FROM openjdk:11-jre-slim
 COPY --from=BASE /incrementalizer/bosh-cli-6.0.0-linux-amd64 /usr/local/bin/bosh
 COPY --from=BASE /incrementalizer/om-linux-4.1.0 /usr/local/bin/om
 COPY --from=BASE /incrementalizer/credhub /usr/local/bin/credhub
-COPY --from=BASE /incrementalizer/yamldiff-v0.1.0-linux-amd64 /usr/local/bin/yamldiff
 COPY --from=BASE /incrementalizer/target/incrementalizer.jar /
 
 RUN chmod +x /usr/local/bin/bosh
 RUN chmod +x /usr/local/bin/om
 RUN chmod +x /usr/local/bin/credhub
-RUN chmod +x /usr/local/bin/yamldiff
 
 ADD bin/incrementalizer /usr/local/bin
 RUN chmod +x /usr/local/bin/incrementalizer
