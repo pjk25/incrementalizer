@@ -90,6 +90,10 @@
 
     (let [extra-config (util/non-specd ::desired-configuration/desired-config desired-config)]
       (when-not (empty? extra-config)
+        (binding [*out* *err*]
+          (println "The desired foundation configuration contains extraneous data")
+          (pprint extra-config)
+          (println))
         (throw (ex-info "The desired foundation configuration contains extraneous data" extra-config))))
 
     (if (= deployed-config desired-config)
