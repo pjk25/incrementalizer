@@ -23,7 +23,10 @@
             :opsman-version "2.5.0"
             :products [{:product-name "cf"
                         :version "2.5.4"
-                        :source {:pivnet-file-glob "*.pivotal"}}]})))
+                        :source {:pivnet-file-glob "*.pivotal"}
+                        :stemcells [{:version "100.1"
+                                     :os "ubuntu-xenial"
+                                     :source {:pivnet-file-glob "*google*"}}]}]})))
 
   (testing "when a tile just needs an update"
     (is (= (yaml/parse-string (core/minimal-change {:constraints-path "resources/fixtures/constraints.edn"
@@ -33,7 +36,10 @@
             :opsman-version "2.5.0"
             :products [{:product-name "cf"
                         :version "2.5.5"
-                        :source {:pivnet-file-glob "*.pivotal"}}]})))
+                        :source {:pivnet-file-glob "*.pivotal"}
+                        :stemcells [{:version "100.1"
+                                     :os "ubuntu-xenial"
+                                     :source {:pivnet-file-glob "*google*"}}]}]})))
 
   (testing "when the desired is already deployed"
     (is (= (yaml/parse-string (core/minimal-change {:constraints-path "resources/fixtures/constraints.edn"
@@ -47,8 +53,13 @@
                                                     :desired-config-path "resources/fixtures/desired.yml"}))
            {:director-config {:properties-configuration {:director_configuration {:director_worker_count 5}}}
             :opsman-version "2.5.0"
-            :products [{:product-name "p-redis"
+            :products [{:product-name "cf"
+                        :version "2.5.4"
+                        :stemcells [{:version "100.1"
+                                     :os "ubuntu-xenial"}]}
+                       {:product-name "p-redis"
                         :version "1.0.0"
-                        :source {:pivnet-file-glob "*.pivotal"}}
-                       {:product-name "cf"
-                        :version "2.5.4"}]}))))
+                        :source {:pivnet-file-glob "*.pivotal"}
+                        :stemcells [{:version "100.1"
+                                     :os "ubuntu-xenial"
+                                     :source {:pivnet-file-glob "*google*"}}]}]}))))

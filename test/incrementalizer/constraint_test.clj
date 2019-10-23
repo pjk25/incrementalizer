@@ -16,10 +16,13 @@
       (is (constraint/valid-config? constraints {:director-config {}
                                                  :opsman-version "2.0.0"
                                                  :products [{:product-name "p-metrics"
-                                                             :version "1.2.0"}
+                                                             :version "1.2.0"
+                                                             :stemcells []}
                                                             {:product-name "cf"
-                                                             :version "2.0.0"}]}))
+                                                             :version "2.0.0"
+                                                             :stemcells []}]}))
       (is (not (constraint/valid-config? constraints {:director-config {}
                                                       :opsman-version "2.0.0"
                                                       :products [{:product-name "p-metrics"
-                                                                  :version "1.2.0"}]}))))))
+                                                                  :version "1.2.0"
+                                                                  :stemcells []}]}))))))
